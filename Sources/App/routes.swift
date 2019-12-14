@@ -43,4 +43,8 @@ func routes(_ app: Application) throws {
             return req.eventLoop.makeSucceededFuture(.ok)
         }
     }
+
+    app.get("healthz") { req in
+        HTTPStatus.ok
+    }
 }
