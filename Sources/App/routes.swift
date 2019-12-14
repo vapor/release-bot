@@ -28,7 +28,7 @@ func routes(_ app: Application) throws {
                 let url = "https://github.com/\(repo.owner.login)/\(repo.name)/releases/tag/\(release.tag_name)"
                 let comment = req.github.issues.create(
                     comment: .init(
-                        body: "These changes are now available in [\(release.tag_name)]()"
+                        body: "These changes are now available in [\(release.tag_name)](\(url))"
                     ),
                     owner: repo.owner.login,
                     repo: repo.name,
