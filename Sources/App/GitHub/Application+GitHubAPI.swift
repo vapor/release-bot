@@ -1,8 +1,23 @@
-//
-//  File.swift
-//  
-//
-//  Created by Tanner Nelson on 12/13/19.
-//
+import Vapor
 
-import Foundation
+extension Application {
+    var github: GitHub {
+        .init(application: self)
+    }
+
+    struct GitHub {
+        struct Key: StorageKey {
+            typealias Value = GitHubAPI.Configuration
+        }
+        var configuration: GitHubAPI.Configuration? {
+            get {
+                self.application.storage[Key.self]
+            }
+            nonmutating set {
+                self.application.storage[Key.self] = newValue
+            }
+        }
+
+        let application: Application
+    }
+}

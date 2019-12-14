@@ -1,8 +1,14 @@
-//
-//  File.swift
-//  
-//
-//  Created by Tanner Nelson on 12/13/19.
-//
+import Vapor
 
-import Foundation
+extension Request {
+    var discord: DiscordWebook {
+        guard let configuration = self.application.discord.configuration else {
+            fatalError("discord webhook service not configured")
+        }
+        return .init(
+            configuration: configuration,
+            client: self.client,
+            logger: self.logger
+        )
+    }
+}

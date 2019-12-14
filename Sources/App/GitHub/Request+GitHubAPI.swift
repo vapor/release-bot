@@ -1,8 +1,10 @@
-//
-//  File.swift
-//  
-//
-//  Created by Tanner Nelson on 12/13/19.
-//
+import Vapor
 
-import Foundation
+extension Request {
+    var github: GitHubAPI {
+        guard let configuration = self.application.github.configuration else {
+            fatalError("GitHub API service not configured")
+        }
+        return .init(configuration: configuration, client: self.client, logger: self.logger)
+    }
+}

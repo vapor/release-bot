@@ -1,8 +1,23 @@
-//
-//  File.swift
-//  
-//
-//  Created by Tanner Nelson on 12/13/19.
-//
+import Vapor
 
-import Foundation
+extension Application {
+    var discord: Discord {
+        .init(application: self)
+    }
+
+    struct Discord {
+        struct Key: StorageKey {
+            typealias Value = DiscordWebook.Configuration
+        }
+        var configuration: DiscordWebook.Configuration? {
+            get {
+                self.application.storage[Key.self]
+            }
+            nonmutating set {
+                self.application.storage[Key.self] = newValue
+            }
+        }
+
+        let application: Application
+    }
+}

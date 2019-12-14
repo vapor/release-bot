@@ -1,3 +1,5 @@
+import Vapor
+
 struct GitHubWebhook {
     struct Label: Codable, Equatable {
         static var semverMajor: Label {
@@ -13,6 +15,7 @@ struct GitHubWebhook {
             let ref: String
         }
         let title: String
+        let number: Int
         let body: String
         let labels: [Label]
         let merged_at: Date?
