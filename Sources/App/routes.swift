@@ -7,7 +7,8 @@ func routes(_ app: Application) throws {
             notification.action == "closed",
             let pr = notification.pull_request,
             pr.merged_at != nil,
-            let repo = notification.repository
+            let repo = notification.repository,
+            pr.base.ref == "master"
         {
             let bump: SemverVersion.Bump
             if pr.labels.contains(.semverMajor) {
