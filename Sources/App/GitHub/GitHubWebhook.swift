@@ -8,6 +8,9 @@ struct GitHubWebhook {
         static var semverMinor: Label {
             .init(name: "semver-minor")
         }
+        static var semverPatch: Label {
+            .init(name: "semver-patch")
+        }
         let name: String
     }
     struct PullRequest: Codable {

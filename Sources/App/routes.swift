@@ -15,8 +15,12 @@ func routes(_ app: Application) throws {
                 bump = .major
             } else if pr.labels.contains(.semverMinor) {
                 bump = .minor
-            } else {
+            } else if pr.labels.contains(.semverPatch) {
                 bump = .patch
+            } else {
+                // If there is no semver label, then don't
+                // tag this release.
+                return req.eventLoop.makeSucceededFuture(.ok)
             }
             return req.github.tagNextRelease(
                 bump:  bump,
