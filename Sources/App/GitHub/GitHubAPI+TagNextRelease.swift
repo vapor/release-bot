@@ -11,22 +11,19 @@ extension GitHubAPI {
     ) -> EventLoopFuture<Releases.Release> {
         self.logger.info("Tagging next \(bump) release to \(owner)/\(repo)")
         return self.releases.all(owner: owner, repo: repo).flatMapThrowing { releases -> SemverVersion in
-            // Sort by latest releases first.
-            var releases = releases.sorted {
-                $0.tag_name > $1.tag_name
-            }
-            // If the branch name is an integer, only include releases
-            // for that major version.
-            if let majorVersion = Int(branch) {
-                releases = releases.filter {
-                    $0.tag_name.hasPrefix("\(majorVersion).")
+            // Parse release versions, sorting by latest first.
+            let versions = releases.compactMap {
+                SemverVersion(string: $0.tag_name)
+            }.filter {
+                guard let majorVersion = Int(branch) else {
+                    return true
                 }
-            }
-            guard let latest = releases.first else {
+                // If the branch name is an integer, only include releases
+                // for that major version.
+                return $0.major == majorVersion
+            }.sorted { $0 > $1 }
+            guard let version = versions.first else {
                 throw Abort(.internalServerError, reason: "No releases yet")
-            }
-            guard let version = SemverVersion(string: latest.tag_name) else {
-                throw Abort(.internalServerError, reason: "Tag is not valid semver version \(latest.tag_name)")
             }
             self.logger.info("Latest version of \(owner)/\(repo) is \(version)")
             return version.next(bump)

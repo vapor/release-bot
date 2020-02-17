@@ -119,6 +119,43 @@ struct SemverVersion {
     }
 }
 
+extension SemverVersion.Prerelease: Comparable {
+    static func < (lhs: SemverVersion.Prerelease, rhs: SemverVersion.Prerelease) -> Bool {
+        lhs.name < rhs.name
+            && (lhs.major ?? 0) < (rhs.major ?? 0)
+            && (lhs.minor ?? 0) < (rhs.minor ?? 0)
+    }
+}
+
+extension SemverVersion: Comparable {
+    static func < (lhs: SemverVersion, rhs: SemverVersion) -> Bool {
+        if lhs.major < rhs.major {
+            return true
+        } else if lhs.major == rhs.major && lhs.minor < rhs.minor {
+            return true
+        } else if lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch < rhs.patch {
+            return true
+        } else if let lpr = lhs.prerelease,
+            lhs.major == rhs.major, lhs.minor == rhs.minor, lhs.patch == rhs.patch
+        {
+            if let rpr = rhs.prerelease {
+                return lpr < rpr
+            } else {
+                return true
+            }
+        } else {
+            return false
+        }
+    }
+
+    static func == (lhs: SemverVersion, rhs: SemverVersion) -> Bool {
+        lhs.major == rhs.major
+            && lhs.minor == rhs.minor
+            && lhs.patch == rhs.patch
+            && lhs.prerelease == rhs.prerelease
+    }
+}
+
 extension SemverVersion: CustomStringConvertible {
     var description: String {
         var description = "\(self.major).\(self.minor).\(self.patch)"
