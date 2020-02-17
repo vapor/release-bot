@@ -2,6 +2,11 @@ import Vapor
 
 func routes(_ app: Application) throws {
     app.post("webhook") { req -> EventLoopFuture<HTTPStatus> in
+        // Only accept pull_request events.
+        guard req.headers.first(name: "X-GitHub-Event") == "pull_request" else {
+            return req.eventLoop.makeSucceededFuture(.ok)
+        }
+
         let notification = try req.content.decode(GitHubWebhook.Notification.self)
         if
             notification.action == "closed",
