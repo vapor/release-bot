@@ -11,6 +11,17 @@ extension GitHubAPI {
     ) -> EventLoopFuture<Releases.Release> {
         self.logger.info("Tagging next \(bump) release to \(owner)/\(repo)")
         return self.releases.all(owner: owner, repo: repo).flatMapThrowing { releases -> SemverVersion in
+            // Sort by latest releases first.
+            var releases = releases.sorted {
+                $0.tag_name > $1.tag_name
+            }
+            // If the branch name is an integer, only include releases
+            // for that major version.
+            if let majorVersion = Int(branch) {
+                releases = releases.filter {
+                    $0.tag_name.hasPrefix("\(majorVersion).")
+                }
+            }
             guard let latest = releases.first else {
                 throw Abort(.internalServerError, reason: "No releases yet")
             }
