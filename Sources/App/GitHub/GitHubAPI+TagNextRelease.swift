@@ -9,7 +9,7 @@ extension GitHubAPI {
         name: String,
         body: String
     ) -> EventLoopFuture<Releases.Release> {
-        self.logger.info("Tagging next \(bump) release to \(owner)/\(repo)")
+        self.logger.info("Tagging next \(bump) release to \(owner)/\(repo):\(branch)")
         return self.releases.all(owner: owner, repo: repo).flatMapThrowing { releases -> SemverVersion in
             // Parse release versions, sorting by latest first.
             let versions = releases.compactMap {
