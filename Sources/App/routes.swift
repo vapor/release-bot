@@ -27,13 +27,19 @@ func routes(_ app: Application) throws {
                 // tag this release.
                 return req.eventLoop.makeSucceededFuture(.ok)
             }
+            let acknowledgment: String
+            if pr.user.login == pr.merged_by.login {
+                acknowledgment = "This patch was authored and released by @\(pr.user.login)."
+            } else {
+                acknowledgment = "This patch was authored by @\(pr.user.login) and released by @\(pr.merged_by.login)."
+            }
             return req.github.tagNextRelease(
                 bump:  bump,
                 owner: repo.owner.login,
                 repo: repo.name,
                 branch: pr.base.ref,
                 name: pr.title,
-                body: pr.body
+                body: "\(pr.body)\n\n\(acknowledgment)."
             ).flatMap { release in
                 let url = "https://github.com/\(repo.owner.login)/\(repo.name)/releases/tag/\(release.tag_name)"
                 let comment = req.github.issues.create(
