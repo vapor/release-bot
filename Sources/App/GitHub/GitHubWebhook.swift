@@ -17,12 +17,17 @@ struct GitHubWebhook {
         struct Base: Codable {
             let ref: String
         }
+        struct User: Codable {
+            let login: String
+        }
         let title: String
         let number: Int
         let body: String
         let labels: [Label]
         let merged_at: Date?
         let base: Base
+        let user: User
+        let merged_by: User
     }
     struct Repository: Codable {
         struct Owner: Codable {
