@@ -39,7 +39,11 @@ func routes(_ app: Application) throws {
                 repo: repo.name,
                 branch: pr.base.ref,
                 name: pr.title,
-                body: "\(pr.body)\n\n\(acknowledgment)"
+                body: """
+                    ###### _\(acknowledgment)_
+                    
+                    \(pr.body)
+                    """
             ).flatMap { release in
                 let url = "https://github.com/\(repo.owner.login)/\(repo.name)/releases/tag/\(release.tag_name)"
                 let comment = req.github.issues.create(
