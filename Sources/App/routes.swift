@@ -54,7 +54,9 @@ func routes(_ app: Application) throws {
                     repo: repo.name,
                     issue: pr.number
                 )
-                let discord = req.discord.post(to: .release, message: url)
+                let formattedRepoName = repo.name.split(separator: "-").map { String($0).capitalized }.joined()
+                let discordMessage = "\(formattedRepoName) \(release.tag_name): \(pr.title)\n\(url)"
+                let discord = req.discord.post(to: .release, message: discordMessage)
                 return discord.and(comment)
                     .transform(to: .ok)
             }
