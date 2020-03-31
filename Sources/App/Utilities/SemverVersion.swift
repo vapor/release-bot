@@ -17,25 +17,14 @@ struct SemverVersion {
                 }
             }
             
-            case alpha, beta, rc, full, custom(String)
+            case alpha, beta, rc, custom(String)
             
             var equatableValue: Int {
                 switch self {
                 case .alpha: return 1
                 case .beta: return 2
                 case .rc: return 3
-                case .full: return 4
                 case .custom(_): return 5
-                }
-            }
-            
-            var next: Self? {
-                switch self {
-                case .alpha: return .beta
-                case .beta: return .rc
-                case .rc: return .full
-                case .full: return nil
-                case .custom(_): return nil
                 }
             }
         }
@@ -43,6 +32,16 @@ struct SemverVersion {
         var name: Identifier
         var major: Int?
         var minor: Int?
+        
+        var bump: Self? {
+            switch name {
+            case .alpha: return .init(name: .beta, major: nil, minor: nil)
+            case .beta: return .init(name: .rc, major: nil, minor: nil)
+            case .rc: return nil
+            case .custom(_): return self
+            }
+
+        }
     }
 
     var major: Int
@@ -123,28 +122,25 @@ struct SemverVersion {
     func next(_ bump: Bump) -> SemverVersion {
         var version = self
         if var prerelease = version.prerelease {
+            let p: Prerelease?
             switch bump {
             case .stage:
-                if let next = prerelease.name.next {
-                    prerelease.minor = 0
-                    prerelease.major = 0
-                    prerelease.name = next
-                }
+                p = prerelease.bump
             case .patch, .minor:
                 if let existing = prerelease.minor {
-                    prerelease.minor = existing + 1
+                    p = .init(name: prerelease.name, major: prerelease.major, minor: existing + 1)
                 } else {
-                    prerelease.minor = 1
+                    p = .init(name: prerelease.name, major: prerelease.major, minor: 1)
                 }
             case .major:
                 prerelease.minor = nil
                 if let existing = prerelease.major {
-                    prerelease.major = existing + 1
+                    p = .init(name: prerelease.name, major: existing + 1, minor: nil)
                 } else {
-                    prerelease.major = 1
+                    p = .init(name: prerelease.name, major: 1, minor: nil)
                 }
             }
-            version.prerelease = prerelease
+            version.prerelease = p
         } else {
             switch bump {
             case .stage:
