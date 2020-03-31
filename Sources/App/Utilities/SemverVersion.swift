@@ -1,12 +1,46 @@
 struct SemverVersion {
     enum Bump {
+        case stage
         case major
         case minor
         case patch
     }
 
     struct Prerelease {
-        var name: String
+        enum Identifier: Equatable {
+            init(_ string: String) {
+                switch string {
+                case "alpha": self = .alpha
+                case "beta": self = .beta
+                case "rc": self = .rc
+                default: self = .custom(string)
+                }
+            }
+            
+            case alpha, beta, rc, full, custom(String)
+            
+            var equatableValue: Int {
+                switch self {
+                case .alpha: return 1
+                case .beta: return 2
+                case .rc: return 3
+                case .full: return 4
+                case .custom(_): return 5
+                }
+            }
+            
+            var next: Self? {
+                switch self {
+                case .alpha: return .beta
+                case .beta: return .rc
+                case .rc: return .full
+                case .full: return nil
+                case .custom(_): return nil
+                }
+            }
+        }
+        
+        var name: Identifier
         var major: Int?
         var minor: Int?
     }
@@ -41,11 +75,14 @@ struct SemverVersion {
                 return nil
             }
             switch parts.count {
+            case 1:
+                self.prerelease = nil
             case 2:
                 let prerelease = parts[1].split(separator: ".")
                 switch prerelease.count {
                 case 1, 2, 3:
                     let name = String(prerelease[0])
+                    let identifier = Prerelease.Identifier(name)
                     let major: Int?
                     let minor: Int?
                     switch prerelease.count {
@@ -68,7 +105,7 @@ struct SemverVersion {
                         minor = nil
                     }
                     self.prerelease = Prerelease(
-                        name: name,
+                        name: identifier,
                         major: major,
                         minor: minor
                     )
@@ -76,7 +113,7 @@ struct SemverVersion {
                     return nil
                 }
             default:
-                self.prerelease = nil
+                return nil
             }
         default:
             return nil
@@ -87,6 +124,12 @@ struct SemverVersion {
         var version = self
         if var prerelease = version.prerelease {
             switch bump {
+            case .stage:
+                if let next = prerelease.name.next {
+                    prerelease.minor = 0
+                    prerelease.major = 0
+                    prerelease.name = next
+                }
             case .patch, .minor:
                 if let existing = prerelease.minor {
                     prerelease.minor = existing + 1
@@ -104,6 +147,8 @@ struct SemverVersion {
             version.prerelease = prerelease
         } else {
             switch bump {
+            case .stage:
+                break
             case .patch:
                 version.patch += 1
             case .minor:
@@ -121,7 +166,7 @@ struct SemverVersion {
 
 extension SemverVersion.Prerelease: Comparable {
     static func < (lhs: SemverVersion.Prerelease, rhs: SemverVersion.Prerelease) -> Bool {
-        lhs.name < rhs.name
+        lhs.name.equatableValue < rhs.name.equatableValue
             && (lhs.major ?? 0) < (rhs.major ?? 0)
             && (lhs.minor ?? 0) < (rhs.minor ?? 0)
     }
