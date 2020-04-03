@@ -1,6 +1,6 @@
 struct SemverVersion {
     enum Bump {
-        case stage
+        case releaseStage
         case major
         case minor
         case patch
@@ -17,7 +17,7 @@ struct SemverVersion {
         var major: Int?
         var minor: Int?
         
-        var bump: Self? {
+        var nextReleaseStage: Self? {
             guard let identifier = Identifier(rawValue: self.name) else {
                 return nil
             }
@@ -109,8 +109,8 @@ struct SemverVersion {
         if var prerelease = version.prerelease {
             let p: Prerelease?
             switch bump {
-            case .stage:
-                p = prerelease.bump
+            case .releaseStage:
+                p = prerelease.nextReleaseStage
             case .patch, .minor:
                 if let existing = prerelease.minor {
                     p = .init(name: prerelease.name, major: prerelease.major, minor: existing + 1)
@@ -128,7 +128,7 @@ struct SemverVersion {
             version.prerelease = p
         } else {
             switch bump {
-            case .stage:
+            case .releaseStage:
                 break
             case .patch:
                 version.patch += 1
