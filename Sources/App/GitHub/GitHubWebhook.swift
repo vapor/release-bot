@@ -11,6 +11,9 @@ struct GitHubWebhook {
         static var semverPatch: Label {
             .init(name: "semver-patch")
         }
+        static var release: Label {
+            .init(name: "release")
+        }
         let name: String
     }
     struct PullRequest: Codable {

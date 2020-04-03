@@ -15,12 +15,12 @@ extension GitHubAPI {
             let versions = releases.compactMap {
                 SemverVersion(string: $0.tag_name)
             }.filter {
-                guard let majorVersion = Int(branch) else {
-                    return true
+                if let majorVersion = Int(branch) {
+                    // If the branch name is an integer, only include releases
+                    // for that major version.
+                    return $0.major == majorVersion
                 }
-                // If the branch name is an integer, only include releases
-                // for that major version.
-                return $0.major == majorVersion
+                return true
             }.sorted { $0 > $1 }
             guard let version = versions.first else {
                 throw Abort(.internalServerError, reason: "No releases yet")
