@@ -17,7 +17,7 @@ func routes(_ app: Application) throws {
         {
             let bump: SemverVersion.Bump
             if pr.labels.contains(.release) {
-                bump = .stage
+                bump = .releaseStage
             } else if pr.labels.contains(.semverMajor) {
                 bump = .major
             } else if pr.labels.contains(.semverMinor) {
