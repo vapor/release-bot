@@ -1,6 +1,6 @@
 import Vapor
 
-struct DiscordWebook {
+struct DiscordWebhook {
     struct Configuration {
         let tokens: [Identifier: String]
     }

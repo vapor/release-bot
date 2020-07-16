@@ -1,7 +1,7 @@
 import Vapor
 
 extension Request {
-    var discord: DiscordWebook {
+    var discord: DiscordWebhook {
         guard let configuration = self.application.discord.configuration else {
             fatalError("discord webhook service not configured")
         }
