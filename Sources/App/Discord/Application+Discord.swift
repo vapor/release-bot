@@ -7,9 +7,9 @@ extension Application {
 
     struct Discord {
         struct Key: StorageKey {
-            typealias Value = DiscordWebook.Configuration
+            typealias Value = DiscordWebhook.Configuration
         }
-        var configuration: DiscordWebook.Configuration? {
+        var configuration: DiscordWebhook.Configuration? {
             get {
                 self.application.storage[Key.self]
             }
