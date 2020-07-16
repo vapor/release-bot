@@ -22,7 +22,7 @@ struct DiscordWebook {
 
     func post(to identifier: Identifier, message: String) -> EventLoopFuture<Void> {
         guard let token = self.configuration.tokens[identifier] else {
-            return self.client.eventLoopGroup.next()
+            return self.client.eventLoop.next()
                 .makeFailedFuture(Error(reason: "No token for this webhook"))
         }
         let url = "https://discordapp.com/api/webhooks/\(identifier.string)/\(token)?wait=true"
