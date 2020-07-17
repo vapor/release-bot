@@ -7,4 +7,5 @@ DerivedData/
 db.sqlite
 .swiftpm
 .env
+Tests/LinuxMain.swift
 

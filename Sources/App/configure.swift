@@ -1,6 +1,8 @@
 import Vapor
 
 public func configure(_ app: Application) throws {
+    app.routes.defaultMaxBodySize = "64k"
+    
     guard let githubAccessToken = Environment.get("GITHUB_ACCESS_TOKEN") else {
         fatalError("GITHUB_ACCESS_TOKEN not set in environment")
     }
