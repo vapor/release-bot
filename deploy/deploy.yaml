@@ -64,8 +64,8 @@ Resources:
       Runtime: provided
       Environment:
         Variables: 
-          GITHUB_ACCESS_TOKEN: '{{resolve:secretsmanager:release-bot/discord-webhook-token:SecretString::GH-2021-03-23-01}}'
-          DISCORD_WEBHOOK_TOKEN: '{{resolve:secretsmanager:release-bot/discord-webhook-token:SecretString::GH-2021-03-23-01}}'
+          GITHUB_ACCESS_TOKEN: '{{resolve:secretsmanager:release-bot/github-access-token:SecretString}}'
+          DISCORD_WEBHOOK_TOKEN: '{{resolve:secretsmanager:release-bot/discord-webhook-token:SecretString}}'
 
   lambdaApiGatewayInvoke:
     Type: AWS::Lambda::Permission

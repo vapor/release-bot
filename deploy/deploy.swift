@@ -2,7 +2,7 @@
 import Foundation
 
 // MARK: - Script variables
-let awsProfileName: String? = "vapor"
+let awsProfileName: String? = "vapor-deployer"
 let serviceName = "vapor-release-bot"
 
 // MARK: - Functions
@@ -51,14 +51,14 @@ if let profileName = awsProfileName {
 }
 
 print("Buidling lambda image")
-let buildCommands = ["./scripts/build-and-package.sh", "release-bot"]
+let buildCommands = ["./scripts/build-and-package.sh", "Run"]
 let (buildResult, _) = shell(buildCommands, returnStdOut: false)
 guard buildResult == 0 else {
     print("❌ ERROR: Failed to build Lambda image")
     exit(1)
 }
 
-let hashCommand = ["shasum", ".build/lambda/release-bot/lambda.zip"]
+let hashCommand = ["shasum", ".build/lambda/Run/lambda.zip"]
 let (hashResult, hashOutputPipe) = shell(hashCommand, returnStdOut: true)
 guard hashResult == 0, let hashOutput = hashOutputPipe.string() else {
     print("❌ ERROR: Failed to hash Lambda image")
@@ -74,7 +74,7 @@ let date = dateFormatter.string(from: Date())
 
 let newFilename = "lambda-\(date)-\(hash).zip"
 
-try FileManager().copyItem(atPath: ".build/lambda/release-bot/lambda.zip", toPath: newFilename)
+try FileManager().copyItem(atPath: ".build/lambda/Run/lambda.zip", toPath: newFilename)
 
 defer {
     // Clean up uploaded Zip

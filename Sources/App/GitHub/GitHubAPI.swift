@@ -22,7 +22,7 @@ struct GitHubAPI {
         return self.client.send(method, to: URI(string: "https://api.github.com\(path)")) {
             $0.headers.add(name: .userAgent, value: "vapor/release-bot v1")
             $0.headers.basicAuthorization = .init(
-                username: "tanner0101",
+                username: "VaporBot",
                 password: self.configuration.personalAccessToken
             )
             try beforeSend(&$0)
