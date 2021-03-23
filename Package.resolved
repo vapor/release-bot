@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "swift-aws-lambda-runtime",
+        "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-runtime.git",
+        "state": {
+          "branch": null,
+          "revision": "e33e4afbf0e290029c9887f271ae2ad6a4a65269",
+          "version": "0.4.0"
+        }
+      },
+      {
         "package": "swift-backtrace",
         "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
@@ -62,6 +71,15 @@
           "branch": null,
           "revision": "3bea268b223651c4ab7b7b9ad62ef9b2d4143eb6",
           "version": "1.1.6"
+        }
+      },
+      {
+        "package": "swift-extras-base64",
+        "repositoryURL": "https://github.com/swift-extras/swift-extras-base64",
+        "state": {
+          "branch": null,
+          "revision": "97237cf1bc1feebaeb0febec91c1e1b9e4d839b3",
+          "version": "0.7.0"
         }
       },
       {
@@ -134,6 +152,15 @@
           "branch": null,
           "revision": "d569f32c3b594af9280925b7218555524bd715a5",
           "version": "4.41.7"
+        }
+      },
+      {
+        "package": "vapor-aws-lambda-runtime",
+        "repositoryURL": "https://github.com/vapor-community/vapor-aws-lambda-runtime",
+        "state": {
+          "branch": null,
+          "revision": "93cec68c18613f6da47cd040e2e37727a3200cf4",
+          "version": "0.6.0"
         }
       },
       {
