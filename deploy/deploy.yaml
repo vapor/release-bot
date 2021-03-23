@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CF Stack for the Vapor Release Bot
+
+Parameters:
+  apiGatewayName:
+    Type: String
+    Default: vapor-release-bot
+  apiGatewayStageName:
+    Type: String
+    AllowedPattern: "[a-z0-9]+"
+    Default: webhook
+  apiGatewayHTTPMethod:
+    Type: String
+    Default: POST
+  lambdaFunctionName:
+    Type: String
+    AllowedPattern: "[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+"
+    Default: vapor-release-bot-lambda
+  Filename:
+    Type: String
+    Description: Filename of the code function uploaded to S3
+
+Resources:
+  apiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: Example API Gateway
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: !Ref apiGatewayName
+
+  apiGatewayRootMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: !Ref apiGatewayHTTPMethod
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations
+          - lambdaArn: !GetAtt lambdaFunction.Arn
+      ResourceId: !GetAtt apiGateway.RootResourceId
+      RestApiId: !Ref apiGateway
+
+  apiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - apiGatewayRootMethod
+    Properties:
+      RestApiId: !Ref apiGateway
+      StageName: !Ref apiGatewayStageName
+
+  lambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: vapor-lambda-functions
+        S3Key: !Sub "vapor-release-bot/${Filename}"
+      FunctionName: !Ref lambdaFunctionName
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided
+
+  lambdaApiGatewayInvoke:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt lambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      # note: if route *not* at API Gateway root, `SourceArn` would take the form of:
+      #               arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${apiGateway}/${apiGatewayStageName}/${apiGatewayHTTPMethod}/PATH_PART
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${apiGateway}/${apiGatewayStageName}/${apiGatewayHTTPMethod}/
+
+  lambdaIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Policies:
+        - PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Effect: Allow
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
+          PolicyName: lambda
+
+  lambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${lambdaFunctionName}
+      RetentionInDays: 30
+
+Outputs:
+  apiGatewayInvokeURL:
+    Value: !Sub https://${apiGateway}.execute-api.${AWS::Region}.amazonaws.com/${apiGatewayStageName}
+
+  lambdaArn:
+    Value: !GetAtt lambdaFunction.Arn
