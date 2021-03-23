@@ -7,7 +7,13 @@ func routes(_ app: Application) throws {
             return req.eventLoop.makeSucceededFuture(.ok)
         }
 
-        let notification = try req.content.decode(GitHubWebhook.Notification.self)
+        let notification: GitHubWebhook.Notification
+        do {
+            notification = try req.content.decode(GitHubWebhook.Notification.self)
+        } catch {
+            req.logger.warning("Failed to decode payload, assuming it's not a PR")
+            return req.eventLoop.future(.ok)
+        }
         if
             notification.action == "closed",
             let pr = notification.pull_request,
