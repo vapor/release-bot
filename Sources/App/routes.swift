@@ -1,7 +1,7 @@
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.post("webhook") { req -> EventLoopFuture<HTTPStatus> in
+    app.post { req -> EventLoopFuture<HTTPStatus> in
         // Only accept pull_request events.
         guard req.headers.first(name: "X-GitHub-Event") == "pull_request" else {
             return req.eventLoop.makeSucceededFuture(.ok)
