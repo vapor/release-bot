@@ -7,7 +7,7 @@ struct DiscordWebhook {
 
     struct Identifier: Hashable, Equatable {
         static var release: Self {
-            .init(string: "655226809251528708")
+            .init(string: "822074629794299915")
         }
         let string: String
     }
