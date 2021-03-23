@@ -13,7 +13,7 @@ func routes(_ app: Application) throws {
             let pr = notification.pull_request,
             pr.merged_at != nil,
             let repo = notification.repository,
-            pr.base.ref == "master"
+            pr.base.ref == "main"
         {
             let bump: SemverVersion.Bump
             if pr.labels.contains(.release) {
