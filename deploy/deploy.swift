@@ -2,7 +2,7 @@
 import Foundation
 
 // MARK: - Script variables
-let awsProfileName: String? = nil
+let awsProfileName: String? = "vapor-deployer"
 let serviceName = "vapor-release-bot"
 
 // MARK: - Functions
