@@ -17,6 +17,8 @@ jobs:
       uses: actions/checkout@v3.0.0
     - name: Set up AWS credentials
       run: |
+        touch ~/.aws/credentials
+        touch ~/.aws/config
         echo "[vapor-deployer]" >> ~/.aws/credentials
         echo "aws_access_key_id=${{ secrets.DEPLOYER_ACCESS_KEY_ID }}" >> ~/.aws/credentials
         echo "aws_secret_access_key=${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}" >> ~/.aws/credentials
