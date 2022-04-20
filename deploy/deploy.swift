@@ -88,9 +88,10 @@ if let profile = awsProfileName {
     uploadToS3Args.append(contentsOf: ["--profile", profile])
 }
 
-let (uploadResult, _) = shell(uploadToS3Args, returnStdOut: true)
+let (uploadResult, uploadResponse) = shell(uploadToS3Args, returnStdOut: true)
 guard uploadResult == 0 else {
     print("❌ ERROR: Failed to upload to S3")
+    print(uploadResponse.string()!)
     exit(1)
 }
 
@@ -101,9 +102,10 @@ var deployStackArgs = ["aws", "cloudformation", "deploy", "--stack-name", stackN
 if let profile = awsProfileName {
     deployStackArgs.append(contentsOf: ["--profile", profile])
 }
-let (deployStackResult, _) = shell(deployStackArgs, returnStdOut: true)
+let (deployStackResult, deployStackResponse) = shell(deployStackArgs, returnStdOut: true)
 guard deployStackResult == 0 else {
     print("❌ ERROR: Failed to deploy stack \(stackName)")
+    print(deployStackResponse.string()!)
     exit(1)
 }
 
