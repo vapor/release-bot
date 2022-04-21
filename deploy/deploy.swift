@@ -105,7 +105,7 @@ if let profile = awsProfileName {
 let (deployStackResult, deployStackResponse) = shell(deployStackArgs, returnStdOut: true)
 guard deployStackResult == 0 else {
     print("❌ ERROR: Failed to deploy stack \(stackName)")
-    print(deployStackResponse.string()!)
+    print("RESPONSE: \(deployStackResponse.string()!)")
     exit(1)
 }
 
