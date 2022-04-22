@@ -9,3 +9,5 @@ db.sqlite
 .env
 Tests/LinuxMain.swift
 
+.vscode/launch.json
+.vscode/settings.json

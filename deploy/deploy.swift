@@ -2,7 +2,7 @@
 import Foundation
 
 // MARK: - Script variables
-let awsProfileName: String? = "vapor-deployer"
+let awsProfileName: String? = nil//"vapor-deployer"
 let serviceName = "vapor-release-bot"
 
 // MARK: - Functions
@@ -88,22 +88,24 @@ if let profile = awsProfileName {
     uploadToS3Args.append(contentsOf: ["--profile", profile])
 }
 
-let (uploadResult, _) = shell(uploadToS3Args, returnStdOut: true)
+let (uploadResult, uploadResponse) = shell(uploadToS3Args, returnStdOut: true)
 guard uploadResult == 0 else {
     print("❌ ERROR: Failed to upload to S3")
+    print("❌ \(uploadResponse.string()!)")
     exit(1)
 }
 
 print("🚀 Deploying CF stack...")
 
 let stackName = "\(serviceName)-stack"
-var deployStackArgs = ["aws", "cloudformation", "deploy", "--stack-name", stackName, "--template-file", "deploy/deploy.yaml", "--parameter-overrides", "Filename=\(newFilename)", "--capabilities", "CAPABILITY_NAMED_IAM", "--no-fail-on-empty-changeset flag"]
+var deployStackArgs = ["aws", "cloudformation", "deploy", "--stack-name", stackName, "--template-file", "deploy/deploy.yaml", "--parameter-overrides", "Filename=\(newFilename)", "--capabilities", "CAPABILITY_NAMED_IAM", "--no-fail-on-empty-changeset"]
 if let profile = awsProfileName {
     deployStackArgs.append(contentsOf: ["--profile", profile])
 }
-let (deployStackResult, _) = shell(deployStackArgs, returnStdOut: true)
+let (deployStackResult, deployStackResponse) = shell(deployStackArgs, returnStdOut: true)
 guard deployStackResult == 0 else {
     print("❌ ERROR: Failed to deploy stack \(stackName)")
+    print("❌ RESPONSE: \(deployStackResponse.string()!)")
     exit(1)
 }
 
