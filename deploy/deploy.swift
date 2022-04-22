@@ -91,7 +91,7 @@ if let profile = awsProfileName {
 let (uploadResult, uploadResponse) = shell(uploadToS3Args, returnStdOut: true)
 guard uploadResult == 0 else {
     print("❌ ERROR: Failed to upload to S3")
-    print(uploadResponse.string()!)
+    print("❌ \(uploadResponse.string()!)")
     exit(1)
 }
 
@@ -105,7 +105,7 @@ if let profile = awsProfileName {
 let (deployStackResult, deployStackResponse) = shell(deployStackArgs, returnStdOut: true)
 guard deployStackResult == 0 else {
     print("❌ ERROR: Failed to deploy stack \(stackName)")
-    print("RESPONSE: \(deployStackResponse.string()!)")
+    print("❌ RESPONSE: \(deployStackResponse.string()!)")
     exit(1)
 }
 
