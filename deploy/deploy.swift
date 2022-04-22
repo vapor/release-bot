@@ -97,7 +97,7 @@ guard uploadResult == 0 else {
 print("🚀 Deploying CF stack...")
 
 let stackName = "\(serviceName)-stack"
-var deployStackArgs = ["aws", "cloudformation", "deploy", "--stack-name", stackName, "--template-file", "deploy/deploy.yaml", "--parameter-overrides", "Filename=\(newFilename)", "--capabilities", "CAPABILITY_NAMED_IAM"]
+var deployStackArgs = ["aws", "cloudformation", "deploy", "--stack-name", stackName, "--template-file", "deploy/deploy.yaml", "--parameter-overrides", "Filename=\(newFilename)", "--capabilities", "CAPABILITY_NAMED_IAM", "--no-fail-on-empty-changeset flag"]
 if let profile = awsProfileName {
     deployStackArgs.append(contentsOf: ["--profile", profile])
 }
