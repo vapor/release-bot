@@ -1,11 +1,8 @@
 name: Deploy the release bot to AWS
 
 on:
-  #push: 
-  #  branches: 
-  #    -main
-  pull_request:
-    branches:
+  push: 
+    branches: 
       - main
 
 jobs:
