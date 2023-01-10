@@ -50,7 +50,7 @@ func routes(_ app: Application) throws {
                 body: """
                     ###### _\(acknowledgment)_
                     
-                    \(pr.body)
+                    \(pr.body ?? "")
                     """
             ).flatMap { release in
                 let url = "https://github.com/\(repo.owner.login)/\(repo.name)/releases/tag/\(release.tag_name)"

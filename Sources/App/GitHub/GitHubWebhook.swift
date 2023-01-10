@@ -25,7 +25,7 @@ struct GitHubWebhook {
         }
         let title: String
         let number: Int
-        let body: String
+        let body: String?
         let labels: [Label]
         let merged_at: Date?
         let base: Base
