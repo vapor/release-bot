@@ -1,6 +1,6 @@
 # Contributing
 
-We're excited to see you're interested in contributing to the AsyncKit package! This document covers how you can report any issues you find or contribute with bug fixes and new features!
+We're excited to see you're interested in contributing to the ReleaseBot! This document covers how you can report any issues you find or contribute with bug fixes and new features!
 
 ## Reporting Issues
 
