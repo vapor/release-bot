@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
@@ -16,9 +16,9 @@ let package = Package(
             .product(name: "Vapor", package: "vapor"),
             .product(name: "VaporAWSLambdaRuntime", package: "vapor-aws-lambda-runtime"),
         ]),
-        .target(name: "Run", dependencies: ["App"]),
+        .executableTarget(name: "Run", dependencies: [.target(name: "App")]),
         .testTarget(name: "AppTests", dependencies: [
-            "App",
+            .target(name: "App"),
             .product(name: "XCTVapor", package: "vapor"),
         ])
     ]
